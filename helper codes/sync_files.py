@@ -12,6 +12,7 @@ from docx.oxml.ns import qn
 from PIL import Image
 from lxml import etree
 
+
 # -------------------------
 # CONFIG
 # -------------------------
