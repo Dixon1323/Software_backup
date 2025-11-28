@@ -43,9 +43,9 @@ PLACE_CAGE_MAP = {
 PLACE_CODE_MAP = {
     "Southern Promenade": "sp",
     "Eastern Promenade": "ep",
-    "U-shape East & West Wing": "uset",
+    "U-shape East & West Wing": "use",
     "Northern Promenade": "np",
-    "QD Complex (External)": "qdcet",
+    "QD Complex (External)": "qdce",
     "Marina Carpark 2B": "mc2b",
     "Marina Carpark 2A": "mc2a",
     "Crescent Park 01": "cp1",

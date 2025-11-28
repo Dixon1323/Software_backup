@@ -1,6 +1,6 @@
 from docx import Document
 
-TEMPLATE_PATH = r"D:\Dixon\Automation_software\Office Software\template_fixed.docx"
+TEMPLATE_PATH = r"D:\Dixon\Automation_software\Office Software\template_formatted.docx"
 
 doc = Document(TEMPLATE_PATH)
 

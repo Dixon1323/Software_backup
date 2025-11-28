@@ -1,4 +1,4 @@
-# doc_utils.py
+
 import os
 import shutil
 import uuid
@@ -8,7 +8,7 @@ from docx import Document
 from docx.shared import Pt, Inches
 from docx.oxml.ns import qn
 
-# local imports (project modules)
+
 from logger import log
 from config import TEMPLATE_ORIG, OUTPUT_DIR, LOCAL_DIR
 from data_utils import find_shift_sign_photos, load_day_records_local
@@ -16,7 +16,7 @@ from image_utils import resize_image_fixed
 from xml_utils import inject_images_into_docx, ensure_dir
 from db_utils import save_download_db, load_download_db
 
-# --- helper functions (kept minimal and robust) ---
+
 
 def inline_replace_paragraph(paragraph, target, replacement):
     if target not in paragraph.text:
@@ -28,12 +28,12 @@ def inline_replace_paragraph(paragraph, target, replacement):
     return True
 
 def replace_text_placeholders(doc, mapping):
-    # paragraphs
+    
     for p in doc.paragraphs:
         for key, val in mapping.items():
             if key in p.text:
                 inline_replace_paragraph(p, key, val)
-    # tables
+    
     for table in doc.tables:
         for row in table.rows:
             for cell in row.cells:
@@ -41,7 +41,7 @@ def replace_text_placeholders(doc, mapping):
                     for key, val in mapping.items():
                         if key in p.text:
                             inline_replace_paragraph(p, key, val)
-    # headers/footers
+    
     try:
         for section in doc.sections:
             for p in section.header.paragraphs:
@@ -86,12 +86,12 @@ def insert_image_at_placeholder(doc, placeholder, image_path, width_inches=2.8):
         except Exception as e:
             log(f"Image insert failed at {placeholder}: {e}")
 
-    # paragraphs
+    
     for p in doc.paragraphs:
         if placeholder in clean_text(p.text):
             clear_and_insert(p)
 
-    # table cells
+    
     for table in doc.tables:
         for row in table.rows:
             for cell in row.cells:
@@ -99,7 +99,7 @@ def insert_image_at_placeholder(doc, placeholder, image_path, width_inches=2.8):
                     if placeholder in clean_text(p.text):
                         clear_and_insert(p, cell)
 
-    # headers / footers
+    
     try:
         for section in doc.sections:
             for p in section.header.paragraphs:
@@ -156,7 +156,7 @@ def safe_save_docx(base_path):
                 return new_path
             version += 1
 
-# --- new helper: scan photos folder and map (pic_<num>) placeholders to resized image paths ---
+
 
 def build_pic_placeholders_map(date_str, desired_w=162, desired_h=162):
     """
@@ -172,7 +172,7 @@ def build_pic_placeholders_map(date_str, desired_w=162, desired_h=162):
         if not fname.lower().endswith((".jpg", ".jpeg", ".png")):
             continue
         src = os.path.join(photos_dir, fname)
-        # derive digits from filename
+        
         name_root = os.path.splitext(fname)[0]
         digits = ''.join([c for c in name_root if c.isdigit()])
         if not digits:
@@ -198,7 +198,7 @@ def build_pic_placeholders_map(date_str, desired_w=162, desired_h=162):
     return mapping
 
 
-# --- PLACE -> list of cage numbers ---
+
 PLACES_CAGES = {
     "Southern Promenade": [458,459,460,461,462,463,464,465,466,467,468,469,470,471,472,473,474],
     "Eastern Promenade": [475,476,477,478,526,527,528,530,531],
@@ -221,119 +221,159 @@ PLACES_CAGES = {
     "Qetaifan North Park": [623,624,625,626,630,631,632,633,634],
     "Road A1 - Al Khuzama": [621,622,627,628,629],
     "Seef Lusail North": [635,636,637,638,639,640,641,642],
-    # ensure no duplicates above
+    
 }
 
-# placeholder defs for totals naming conventions (shift-2 placeholders shown here; shift-1 analogous)
+
 PLACE_TOTAL_PLACEHOLDERS = {
-    "Southern Promenade": ("(2sp_total)", "(2spm)", "(2spl)"),
-    "Eastern Promenade": ("(2ept)", "(2epm)", "(2epl)"),
-    "U-shape East & West Wing": ("(2uset)", "(2usem)", "(2usel)"),
-    "Northern Promenade": ("(2npt)", "(2npm)", "(2npl)"),
-    "QD Complex (External)": ("(2qdcet)", "(2qdcetm)", "(2qdcetl)"),
-    "Marina Carpark 2B": ("(2mc2bt)", "(2mc2bm)", "(2mc2bl)"),
-    "Marina Carpark 2A": ("(2mc2at)", "(2mc2am)", "(2mc2al)"),
-    "Crescent Park 01": ("(2cp1t)", "(2cp1m)", "(2cp1l)"),
-    "Crescent Park 02": ("(2cp2t)", "(2cp2m)", "(2cp2l)"),
-    "Crescent Park 03": ("(2cp3t)", "(2cp3m)", "(2cp3l)"),
-    "Crescent Park 04": ("(2cp4t)", "(2cp4m)", "(2cp4l)"),
-    "Crescent Park 05": ("(2cp5t)", "(2cp5m)", "(2cp5l)"),
-    "QETAIFAN ZONE 1": ("(2qz1t)", "(2qz1m)", "(2qz1l)"),
-    "QETAIFAN ZONE 2": ("(2qz2t)", "(2qz2m)", "(2qz2l)"),
-    "QETAIFAN ZONE 3": ("(2qz3t)", "(2qz3m)", "(2qz3l)"),
-    "Al Nafel Park": ("(2anpt)", "(2anpm)", "(2anpl)"),  # fixed typo: (2anpm)/(2anpl)
-    "Al Khuzama Zone -2": ("(2akz2t)", "(2akz2m)", "(2akz2l)"),
-    "Al Khuzama Zone -1": ("(2akz1t)", "(2akz1m)", "(2akz1l)"),
-    "Road A1 - Al Khuzama": ("(2raakt)", "(2raakm)", "(2raakl)"),  # fixed typo: (2raakm)
-    "Qetaifan North Park": ("(2qnpt)", "(2qnpm)", "(2qnpl)"),
-    "Seef Lusail North": ("(2slnt)", "(2slnm)", "(2slnl)"),
+    # SHIFT 1
+    "Southern Promenade_1": ("(1sp_total)", "(1spm)", "(1spl)"),
+    "Eastern Promenade_1": ("(1ept)", "(1epm)", "(1epl)"),
+    "U-shape East & West Wing_1": ("(1uset)", "(1usem)", "(1usel)"),
+    "Northern Promenade_1": ("(1npt)", "(1npm)", "(1npl)"),
+    "QD Complex (External)_1": ("(1qdcet)", "(1qdcetm)", "(1qdcetl)"),
+    "Marina Carpark 2A_1": ("(1mc2at)", "(1mc2am)", "(1mc2al)"),
+    "Marina Carpark 2B_1": ("(1mc2bt)", "(1mc2bm)", "(1mc2bl)"),
+    "Crescent Park 01_1": ("(1cp1t)", "(1cp1m)", "(1cp1l)"),
+    "Crescent Park 02_1": ("(1cp2t)", "(1cp2m)", "(1cp2l)"),
+    "Crescent Park 03_1": ("(1cp3t)", "(1cp3m)", "(1cp3l)"),
+    "Crescent Park 04_1": ("(1cp4t)", "(1cp4m)", "(1cp4l)"),
+    "Crescent Park 05_1": ("(1cp5t)", "(1cp5m)", "(1cp5l)"),
+    "QATAIFAN ZONE 1_1": ("(1qz1t)", "(1qz1m)", "(1qz1l)"),
+    "QATAIFAN ZONE 2_1": ("(1qz2t)", "(1qz2m)", "(1qz2l)"),
+    "QATAIFAN ZONE 3_1": ("(1qz3t)", "(1qz3m)", "(1qz3l)"),
+    "Al Nafel Park_1": ("(1anpt)", "(1anpm)", "(1anpl)"),
+    "Al Khuzama Zone -2_1": ("(1akz2t)", "(1akz2m)", "(1akz2l)"),
+    "Al Khuzama Zone -1_1": ("(1akz1t)", "(1akz1m)", "(1akz1l)"),
+    "Road A1 - Al Khuzama_1": ("(1raakt)", "(1raakm)", "(1raakl)"),
+    "Qetaifan North Park_1": ("(1qnpt)", "(1qnpm)", "(1qnpl)"),
+    "Seef Lusail North_1": ("(1slnt)", "(1slnm)", "(1slnl)"),
+
+    # SHIFT 2
+    "Southern Promenade_2": ("(2sp_total)", "(2spm)", "(2spl)"),
+    "Eastern Promenade_2": ("(2ept)", "(2epm)", "(2epl)"),
+    "U-shape East & West Wing_2": ("(2uset)", "(2usem)", "(2usel)"),
+    "Northern Promenade_2": ("(2npt)", "(2npm)", "(2npl)"),
+    "QD Complex (External)_2": ("(2qdcet)", "(2qdcetm)", "(2qdcetl)"),
+    "Marina Carpark 2A_2": ("(2mc2at)", "(2mc2am)", "(2mc2al)"),
+    "Marina Carpark 2B_2": ("(2mc2bt)", "(2mc2bm)", "(2mc2bl)"),
+    "Crescent Park 01_2": ("(2cp1t)", "(2cp1m)", "(2cp1l)"),
+    "Crescent Park 02_2": ("(2cp2t)", "(2cp2m)", "(2cp2l)"),
+    "Crescent Park 03_2": ("(2cp3t)", "(2cp3m)", "(2cp3l)"),
+    "Crescent Park 04_2": ("(2cp4t)", "(2cp4m)", "(2cp4l)"),
+    "Crescent Park 05_2": ("(2cp5t)", "(2cp5m)", "(2cp5l)"),
+    "QATAIFAN ZONE 1_2": ("(2qz1t)", "(2qz1m)", "(2qz1l)"),
+    "QATAIFAN ZONE 2_2": ("(2qz2t)", "(2qz2m)", "(2qz2l)"),
+    "QATAIFAN ZONE 3_2": ("(2qz3t)", "(2qz3m)", "(2qz3l)"),
+    "Al Nafel Park_2": ("(2anpt)", "(2anpm)", "(2anpl)"),
+    "Al Khuzama Zone -2_2": ("(2akz2t)", "(2akz2m)", "(2akz2l)"),
+    "Al Khuzama Zone -1_2": ("(2akz1t)", "(2akz1m)", "(2akz1l)"),
+    "Road A1 - Al Khuzama_2": ("(2raakt)", "(2raakm)", "(2raakl)"),
+    "Qetaifan North Park_2": ("(2qnpt)", "(2qnpm)", "(2qnpl)"),
+    "Seef Lusail North_2": ("(2slnt)", "(2slnm)", "(2slnl)")
 }
 
-# helper that returns the placeholder name for a cage in a given shift (1 or 2)
-def cage_placeholder(shift, cage_number):
-    return f"({shift}c{cage_number})"
 
-# helper for picture placeholder
+def cage_placeholder(shift, cage_number):
+    return f"{shift}c{cage_number}"
+
+
 def pic_placeholder(cage_number):
     return f"(pic_{cage_number})"
 
-# -------------------------
-# process_record_updates:
-# Reads local JSONs and constructs:
-#  - text_map: placeholders -> string values (per-cage and totals)
-#  - pic_map: (pic_N) -> resized image path
-# -------------------------
+
+
+
+
+
+
 def process_record_updates(date_str, local_dir, resize_fn, logger):
+
     text_map = {}
     pic_map = {}
 
-    records = []
     data_folder = os.path.join(local_dir, date_str, "data")
     photos_folder = os.path.join(local_dir, date_str, "photos")
 
-    # load JSONs
+    records = []
     if os.path.exists(data_folder):
         for fname in sorted(os.listdir(data_folder)):
             if not fname.lower().endswith(".json"):
                 continue
             try:
                 with open(os.path.join(data_folder, fname), "r", encoding="utf-8") as f:
-                    rec = json.load(f)
-                    rec["_filename"] = fname
-                    records.append(rec)
+                    r = json.load(f)
+                    r["_filename"] = fname
+                    records.append(r)
             except Exception as e:
                 logger(f"process_record_updates: failed reading {fname}: {e}")
 
-    # init per-place aggregates
-    place_agg = {place: {'myna': 0, 'local': 0, 'total': 0} for place in PLACES_CAGES.keys()}
-
-    # Initialize all cage placeholders to "0" so they exist
+    # initialize placeholders for both shifts
     for place, cages in PLACES_CAGES.items():
         for c in cages:
-            text_map[cage_placeholder(1, c)] = "0"
-            text_map[cage_placeholder(2, c)] = "0"
+            text_map[f"(1c{c})"] = "0"
+            text_map[f"(2c{c})"] = "0"
 
-    # process record updates
+    # aggregate structure per place
+    place_agg = {
+        place: {
+            "myna_shift1": 0, "local_shift1": 0, "total_shift1": 0,
+            "myna_shift2": 0, "local_shift2": 0, "total_shift2": 0
+        }
+        for place in PLACES_CAGES.keys()
+    }
+
+    # process all record_update JSON files
     for r in records:
         if r.get("type") != "record_update":
             continue
+
+        logger(f"[DEBUG] Loaded JSON record: {json.dumps(r, indent=2)}")
+
         shift = str(r.get("shift", "1")).strip()
+
         try:
             cage_no = int(r.get("cage_number"))
-        except Exception:
-            logger(f"process_record_updates: invalid cage_number in record {r.get('_filename','?')}")
+        except:
+            logger("[DEBUG] Invalid cage number")
             continue
 
-        # parse counts
-        myna = 0
-        local = 0
-        try:
-            myna = int(str(r.get("myna_captured") or "0"))
-        except Exception:
-            myna = 0
-        try:
-            local = int(r.get("local_released") or 0)
-        except Exception:
-            local = 0
+        logger(f"[DEBUG] Extracted cage number: {cage_no} for shift {shift}")
 
-        total_for_cell = myna + local
-        ph = cage_placeholder(shift, cage_no)
-        text_map[ph] = str(total_for_cell)
+        myna = int(str(r.get("myna_captured") or "0"))
+        local = int(str(r.get("local_released") or "0"))
+        total = myna + local
 
-        # zero the opposite shift
+        ph = f"({shift}c{cage_no})"
+        logger(f"[DEBUG] Placeholder for this cage: {ph}")
+
+        if ph in text_map:
+            logger(f"[DEBUG] Placeholder FOUND in text_map: {ph}")
+        else:
+            logger(f"[DEBUG] Placeholder NOT FOUND in text_map: {ph}")
+
+        text_map[ph] = f"{myna}M,{local}L"
+        logger(f"[DEBUG] Updated placeholder {ph} -> {myna}M,{local}L")
+
         opp_shift = "1" if shift == "2" else "2"
-        opp_ph = cage_placeholder(opp_shift, cage_no)
+        opp_ph = f"({opp_shift}c{cage_no})"
         text_map[opp_ph] = "0"
+        logger(f"[DEBUG] Zeroed opposite shift placeholder: {opp_ph}")
 
-        # update place aggregates
+        # find the place for this cage
         for place, cages in PLACES_CAGES.items():
             if cage_no in cages:
-                place_agg[place]['myna'] += myna
-                place_agg[place]['local'] += local
-                place_agg[place]['total'] += total_for_cell
+                if shift == "1":
+                    place_agg[place]["myna_shift1"] += myna
+                    place_agg[place]["local_shift1"] += local
+                    place_agg[place]["total_shift1"] += total
+                else:
+                    place_agg[place]["myna_shift2"] += myna
+                    place_agg[place]["local_shift2"] += local
+                    place_agg[place]["total_shift2"] += total
                 break
 
-        # picture mapping
+        # picture processing
         photo = r.get("photo")
         if photo:
             src = os.path.join(photos_folder, photo)
@@ -342,58 +382,71 @@ def process_record_updates(date_str, local_dir, resize_fn, logger):
                 dst = base + "_162.jpg"
                 try:
                     resize_fn(src, dst, 162, 162)
-                    pic_map[pic_placeholder(cage_no)] = dst
+                    pic_map[f"(pic_{cage_no})"] = dst
                 except Exception as e:
                     logger(f"process_record_updates: resize failed for {src}: {e}")
-                    pic_map[pic_placeholder(cage_no)] = src
-            else:
-                logger(f"process_record_updates: photo file for {photo} not found")
+                    pic_map[f"(pic_{cage_no})"] = src
 
-    # totals placeholders
+    # now fill totals placeholders for *both shifts*
     for place, agg in place_agg.items():
-        tpl = PLACE_TOTAL_PLACEHOLDERS.get(place)
-        if not tpl:
-            continue
-        total_ph, myna_ph, local_ph = tpl
-        text_map[total_ph] = str(agg['total'])
-        text_map[myna_ph] = str(agg['myna'])
-        text_map[local_ph] = str(agg['local'])
+        for shift in ("1", "2"):
+            key = f"{place}_{shift}"
+            if key not in PLACE_TOTAL_PLACEHOLDERS:
+                continue
+
+            total_ph, myna_ph, local_ph = PLACE_TOTAL_PLACEHOLDERS[key]
+
+            if shift == "1":
+                t = agg["total_shift1"]
+                m = agg["myna_shift1"]
+                l = agg["local_shift1"]
+            else:
+                t = agg["total_shift2"]
+                m = agg["myna_shift2"]
+                l = agg["local_shift2"]
+
+            text_map[total_ph] = str(t)
+            text_map[myna_ph] = str(m)
+            text_map[local_ph] = str(l)
 
     logger(f"process_record_updates: generated {len(text_map)} text placeholders and {len(pic_map)} pic placeholders")
     return text_map, pic_map
 
-# -------------------------
-# create_partial_report_with_shift_signs: orchestrates text replace + XML injection
-# -------------------------
+
+
+
+
 def create_partial_report_with_shift_signs(date_str):
     log(f"Creating partial report for {date_str}")
 
-    # find sign photos
+    
     sign_map = find_shift_sign_photos(date_str)
 
-    # Load original template
+    
     try:
         doc = Document(TEMPLATE_ORIG)
     except Exception as e:
         log(f"Failed to open template {TEMPLATE_ORIG}: {e}")
         return None
 
-    # Date strings
+    
     human_date = datetime.strptime(date_str, "%Y-%m-%d").strftime("%d %B %Y")
 
-    # Save a temporary copy where python-docx can replace visible text (not textboxes)
-    os.makedirs(OUTPUT_DIR, exist_ok=True)
-    tmp_text_docx = os.path.join(OUTPUT_DIR, f"temp_text_{date_str}_{uuid.uuid4().hex}.docx")
-
+        
     try:
-        mapping_visible = {"(date_with_month)": human_date}
-        replace_text_placeholders(doc, mapping_visible)
-        doc.save(tmp_text_docx)
+        text_map_updates, pic_map_from_records = process_record_updates(
+            date_str, LOCAL_DIR, resize_image_fixed, log
+        )
+        
+        text_map_updates = text_map_updates or {}
+        pic_map_from_records = pic_map_from_records or {}
+        log(f"Received {len(text_map_updates)} text updates and {len(pic_map_from_records)} record images")
     except Exception as e:
-        log(f"Failed to save temporary text document: {e}")
-        return None
+        log(f"process_record_updates failed: {e}")
+        text_map_updates = {}
+        pic_map_from_records = {}
 
-    # Build placeholders -> images map for signs first
+    
     placeholder_image_map = {
         "(shift_1_signin)": None,
         "(shift_1_signout)": None,
@@ -401,7 +454,7 @@ def create_partial_report_with_shift_signs(date_str):
         "(shift_2_signout)": None
     }
 
-    # resize sign images to 162x162 if present
+    
     for k in ["shift_1_signin", "shift_1_signout", "shift_2_signin", "shift_2_signout"]:
         src = sign_map.get(k)
         if src and os.path.exists(src):
@@ -417,47 +470,65 @@ def create_partial_report_with_shift_signs(date_str):
         else:
             placeholder_image_map[f"({k})"] = None
 
-    # 2) Cage photos: scan photos folder for (pic_###) placeholders
-    pic_map = build_pic_placeholders_map(date_str, desired_w=162, desired_h=162)
+    
+    try:
+        pic_map = build_pic_placeholders_map(date_str, desired_w=162, desired_h=162)
+    except Exception as e:
+        log(f"build_pic_placeholders_map failed: {e}")
+        pic_map = {}
 
-    # 3) process record updates -> generate numeric text map and per-cage pic_map (from record photos)
-    text_map_updates, pic_map_from_records = process_record_updates(date_str, LOCAL_DIR, resize_image_fixed, log)
+    
+    
+    merged_pic_map = {}
+    merged_pic_map.update(pic_map)
+    merged_pic_map.update(pic_map_from_records or {})
 
-    # Merge pic maps (record-specific pics should override generic scanned ones)
-    pic_map.update(pic_map_from_records)
+    
+    placeholder_image_map.update(merged_pic_map)
 
-    # Merge sign+pic into placeholder_image_map
-    placeholder_image_map.update(pic_map)
-
-    # Text replacements to perform at XML level (handles textboxes)
-    # include date (in textbox), and **all numeric placeholders + totals** from process_record_updates
+    
     mapping_for_xml = {
         "(date)": date_str,
         "(date_with_month)": human_date
     }
-    # merge numeric placeholders and totals
-    mapping_for_xml.update(text_map_updates)
 
-    # Final doc path (safe)
+    
+    mapping_for_xml.update(text_map_updates)
+    tmp_text_docx = os.path.join(OUTPUT_DIR, f"temp_text_{date_str}_{uuid.uuid4().hex}.docx")
+    try:
+        replace_text_placeholders(doc, mapping_for_xml)
+        doc.save(tmp_text_docx)
+        log(f"Applied {len(mapping_for_xml)} visible text replacements via python-docx")
+    except Exception as e:
+        log(f"Failed saving visible-text update docx: {e}")
+        return None
+        
     final_docx = os.path.join(OUTPUT_DIR, f"Daily_Report_{date_str}_partial.docx")
     final_docx_safe = safe_save_docx(final_docx)
 
-    # Perform XML-level injection (images + text_map_for_xml)
+    for k, v in text_map_updates.items():
+        mapping_for_xml[k] = v
+        if k.startswith("(") and k.endswith(")"):
+            mapping_for_xml[k[1:-1]] = v
+
+    log(f"XML text replacements prepared: {len(mapping_for_xml)} entries (includes non-parenthesized variants)")
+
+
     try:
         inject_images_into_docx(tmp_text_docx, final_docx_safe, placeholder_image_map, text_map=mapping_for_xml)
     except Exception as e:
         log(f"XML injection failed: {e}")
-        # fallback copy
+        
         try:
             shutil.copy2(tmp_text_docx, final_docx_safe)
         except Exception as e2:
             log(f"Failed fallback copy: {e2}")
             return None
 
-    # Final python-docx pass to force Arial and do any plain-text picture insertions fallback
+    
     try:
         doc_final = Document(final_docx_safe)
-        # fallback: if some pic placeholders weren't handled at XML level and are plain text, try python-docx insertion
+        
         for placeholder, img_path in placeholder_image_map.items():
             if img_path and "(" in placeholder:
                 inserted = insert_image_at_placeholder(doc_final, placeholder, img_path, width_inches=1.8)
@@ -468,7 +539,7 @@ def create_partial_report_with_shift_signs(date_str):
     except Exception as e:
         log(f"Post python-docx formatting failed: {e}")
 
-    # cleanup temp file
+    
     try:
         if os.path.exists(tmp_text_docx):
             os.remove(tmp_text_docx)

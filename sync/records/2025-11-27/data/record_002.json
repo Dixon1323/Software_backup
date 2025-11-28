@@ -1,10 +1,10 @@
 {
     "type": "record_update",
-    "shift": "2",
-    "cage_number": "503",
-    "location": "Crescent Park 04",
+    "shift": "1",
+    "cage_number": "593",
+    "location": "Al Khuzama Zone -1",
     "myna_captured": "2",
-    "local_released": "1",
-    "timestamp": "2025-11-27 00:06:36",
+    "local_released": "2",
+    "timestamp": "2025-11-27 15:13:52",
     "photo": "002.jpg"
 }

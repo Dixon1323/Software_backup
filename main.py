@@ -17,12 +17,12 @@ def get_available_dates():
 def main_loop():
     log("=== SYNC SYSTEM STARTED ===")
     while True:
-        #log("Checking for new files...")
+        
         dates = get_available_dates()
         if dates:
             for day in dates:
                 sync_day(day)
-        #log(f"Cycle complete. Sleeping {LOOP_INTERVAL} sec...")
+        # log(f"Cycle complete. Sleeping {LOOP_INTERVAL} sec...")
         time.sleep(LOOP_INTERVAL)
 
 if __name__ == "__main__":
