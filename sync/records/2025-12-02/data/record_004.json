@@ -1,10 +1,6 @@
 {
-    "type": "record_update",
+    "type": "end_shift",
     "shift": "2",
-    "cage_number": "589",
-    "location": "Al Khuzama Zone -1",
-    "myna_captured": "3",
-    "local_released": "1",
-    "timestamp": "2025-12-02 04:14:14",
+    "timestamp": "2025-12-02 21:57:52",
     "photo": "004.jpg"
 }
