@@ -11368,3 +11368,164 @@
 [2025-12-02 22:01:21] No new files – report unchanged.
 [2025-12-02 22:01:32] No new files – report unchanged.
 [2025-12-02 22:01:44] No new files – report unchanged.
+[2025-12-02 22:37:12] Sync started
+[2025-12-02 22:37:13] Failed loading download DB: Expecting value: line 1 column 1 (char 0)
+[2025-12-02 22:37:24] Reports directory set to: D:/Dixon/Automation_software/Reports
+[2025-12-02 22:37:28] Loop interval updated to 10 sec
+[2025-12-02 22:37:58] notify(): attempt -> TEST | If you see this, notifications work
+[2025-12-02 22:37:58] notify(): plyer.notify succeeded
+[2025-12-02 22:38:31] Downloaded: D:\Dixon\Automation_software\Office Software\sync\records\2025-12-02\data\record_001.json
+[2025-12-02 22:38:31] notify(): attempt -> Shift 1 | Shift-1 Signed IN
+[2025-12-02 22:38:31] notify(): plyer.notify succeeded
+[2025-12-02 22:38:35] Downloaded: D:\Dixon\Automation_software\Office Software\sync\records\2025-12-02\photos\001.jpg
+[2025-12-02 22:38:35] Wrote updates mapping to D:/Dixon/Automation_software\updates_2025-12-02.json (contains 474 entries)
+[2025-12-02 22:38:35] Record updates processed; mapping at: D:/Dixon/Automation_software\updates_2025-12-02.json
+[2025-12-02 22:38:35] Creating partial report for 2025-12-02
+[2025-12-02 22:38:35] process_record_updates: generated 474 text placeholders and 0 pic placeholders
+[2025-12-02 22:38:35] Received 474 text updates and 0 record images
+[2025-12-02 22:38:35] Resized sign shift_1_signin: D:\Dixon\Automation_software\Office Software\sync\records\2025-12-02\photos\001_162.jpg
+[2025-12-02 22:38:35] Prepared resized cage photo 001.jpg -> 001_162.jpg
+[2025-12-02 22:38:35] Prepared resized cage photo 001_162.jpg -> 001_162_162.jpg
+[2025-12-02 22:38:58] Applied 476 visible text replacements via python-docx
+[2025-12-02 22:38:58] XML placeholder scan: 402 found, 74 missing (checked 476)
+[2025-12-02 22:38:58] Missing placeholders (sample up to 30): ['(1akz1l)', '(1akz1m)', '(1akz1t)', '(1akz2l)', '(1akz2m)', '(1akz2t)', '(1c496)', '(1c588)', '(1c589)', '(1c590)', '(1c591)', '(1c592)', '(1c593)', '(1c594)', '(1c595)', '(1c596)', '(1c597)', '(1c598)', '(1c599)', '(1c600)', '(1c601)', '(1c602)', '(1c603)', '(1c604)', '(1c605)', '(1c606)', '(1c607)', '(1c608)', '(1c609)', '(1c610)']
+[2025-12-02 22:38:58] XML text replacements prepared: 950 entries (includes non-parenthesized variants)
+[2025-12-02 22:38:59] Image missing for placeholder (shift_1_signout): None
+[2025-12-02 22:38:59] Image missing for placeholder (shift_2_signin): None
+[2025-12-02 22:38:59] Image missing for placeholder (shift_2_signout): None
+[2025-12-02 22:39:00] Saved partial: D:/Dixon/Automation_software\Daily_Report_2025-12-02_partial.docx
+[2025-12-02 22:39:00] Shift 2 end not found yet — not ready.
+[2025-12-02 22:39:13] Downloaded: D:\Dixon\Automation_software\Office Software\sync\records\2025-12-02\data\record_002.json
+[2025-12-02 22:39:13] notify(): attempt -> Shift 2 | Shift-2 Signed IN
+[2025-12-02 22:39:13] notify(): plyer.notify succeeded
+[2025-12-02 22:39:21] Downloaded: D:\Dixon\Automation_software\Office Software\sync\records\2025-12-02\photos\002.jpg
+[2025-12-02 22:39:21] Wrote updates mapping to D:/Dixon/Automation_software\updates_2025-12-02.json (contains 474 entries)
+[2025-12-02 22:39:21] Record updates processed; mapping at: D:/Dixon/Automation_software\updates_2025-12-02.json
+[2025-12-02 22:39:21] Creating partial report for 2025-12-02
+[2025-12-02 22:39:21] process_record_updates: generated 474 text placeholders and 0 pic placeholders
+[2025-12-02 22:39:21] Received 474 text updates and 0 record images
+[2025-12-02 22:39:21] Resized sign shift_1_signin: D:\Dixon\Automation_software\Office Software\sync\records\2025-12-02\photos\001_162.jpg
+[2025-12-02 22:39:21] Resized sign shift_2_signin: D:\Dixon\Automation_software\Office Software\sync\records\2025-12-02\photos\002_162.jpg
+[2025-12-02 22:39:21] Prepared resized cage photo 001.jpg -> 001_162.jpg
+[2025-12-02 22:39:21] Prepared resized cage photo 001_162.jpg -> 001_162_162.jpg
+[2025-12-02 22:39:21] Prepared resized cage photo 001_162_162.jpg -> 001_162_162_162.jpg
+[2025-12-02 22:39:21] Prepared resized cage photo 002.jpg -> 002_162.jpg
+[2025-12-02 22:39:21] Prepared resized cage photo 002_162.jpg -> 002_162_162.jpg
+[2025-12-02 22:39:55] Applied 476 visible text replacements via python-docx
+[2025-12-02 22:39:56] XML placeholder scan: 402 found, 74 missing (checked 476)
+[2025-12-02 22:39:56] Missing placeholders (sample up to 30): ['(1akz1l)', '(1akz1m)', '(1akz1t)', '(1akz2l)', '(1akz2m)', '(1akz2t)', '(1c496)', '(1c588)', '(1c589)', '(1c590)', '(1c591)', '(1c592)', '(1c593)', '(1c594)', '(1c595)', '(1c596)', '(1c597)', '(1c598)', '(1c599)', '(1c600)', '(1c601)', '(1c602)', '(1c603)', '(1c604)', '(1c605)', '(1c606)', '(1c607)', '(1c608)', '(1c609)', '(1c610)']
+[2025-12-02 22:39:56] XML text replacements prepared: 950 entries (includes non-parenthesized variants)
+[2025-12-02 22:39:57] Image missing for placeholder (shift_1_signout): None
+[2025-12-02 22:39:57] Image missing for placeholder (shift_2_signout): None
+[2025-12-02 22:39:59] Saved partial: D:/Dixon/Automation_software\Daily_Report_2025-12-02_partial.docx
+[2025-12-02 22:39:59] Shift 2 end not found yet — not ready.
+[2025-12-02 22:40:11] No new files – report unchanged.
+[2025-12-02 22:40:23] No new files – report unchanged.
+[2025-12-02 22:41:23] Sync started
+[2025-12-02 22:41:23] Failed loading download DB: Expecting value: line 1 column 1 (char 0)
+[2025-12-02 22:41:38] Reports directory set to: D:/Dixon/Automation_software/Reports
+[2025-12-02 22:42:21] Downloaded: D:\Dixon\Automation_software\Office Software\sync\records\2025-12-02\data\record_001.json
+[2025-12-02 22:42:21] notify(): attempt -> Shift 1 | Shift-1 Signed IN
+[2025-12-02 22:42:21] notify(): plyer.notify succeeded
+[2025-12-02 22:42:27] Downloaded: D:\Dixon\Automation_software\Office Software\sync\records\2025-12-02\photos\001.jpg
+[2025-12-02 23:00:12] Sync started
+[2025-12-02 23:00:12] Failed loading download DB: Expecting value: line 1 column 1 (char 0)
+[2025-12-02 23:00:25] Reports directory set to: D:/Dixon/Automation_software/Reports
+[2025-12-02 23:01:10] Downloaded: D:\Dixon\Automation_software\Office Software\sync\records\2025-12-02\data\record_001.json
+[2025-12-02 23:01:10] notify(): attempt -> Shift 1 | Shift-1 Signed IN
+[2025-12-02 23:01:10] notify(): plyer.notify succeeded
+[2025-12-02 23:01:13] Downloaded: D:\Dixon\Automation_software\Office Software\sync\records\2025-12-02\photos\001.jpg
+[2025-12-02 23:08:38] Sync started
+[2025-12-02 23:08:38] Failed loading download DB: Expecting value: line 1 column 1 (char 0)
+[2025-12-02 23:08:41] Downloaded: D:\Dixon\Automation_software\Office Software\sync\records\2025-12-02\data\record_001.json
+[2025-12-02 23:08:41] notify(): attempt -> Shift 1 | Shift-1 Signed IN
+[2025-12-02 23:08:41] notify(): plyer.notify succeeded
+[2025-12-02 23:08:49] Downloaded: D:\Dixon\Automation_software\Office Software\sync\records\2025-12-02\photos\001.jpg
+[2025-12-02 23:08:51] Loop interval updated to 10 sec
+[2025-12-02 23:08:57] Reports directory set to: D:/Dixon/Automation_software/Reports
+[2025-12-02 23:18:20] Cannot start sync: No report folder selected!
+[2025-12-02 23:18:20] notify(): attempt -> Sync Error | Please select a Reports Folder first.
+[2025-12-02 23:18:20] notify(): plyer.notify succeeded
+[2025-12-02 23:18:32] Reports directory set to: D:/Dixon/Automation_software/Reports
+[2025-12-02 23:18:44] Sync started
+[2025-12-02 23:18:44] Failed loading download DB: Expecting value: line 1 column 1 (char 0)
+[2025-12-02 23:18:47] Downloaded: D:\Dixon\Automation_software\Office Software\sync\records\2025-12-02\data\record_001.json
+[2025-12-02 23:18:48] notify(): attempt -> Shift 1 | Shift-1 Signed IN
+[2025-12-02 23:18:48] notify(): plyer.notify succeeded
+[2025-12-02 23:18:58] Downloaded: D:\Dixon\Automation_software\Office Software\sync\records\2025-12-02\photos\001.jpg
+[2025-12-02 23:18:58] Wrote updates mapping to D:/Dixon/Automation_software/Reports\updates_2025-12-02.json (contains 474 entries)
+[2025-12-02 23:18:58] Record updates processed; mapping at: D:/Dixon/Automation_software/Reports\updates_2025-12-02.json
+[2025-12-02 23:18:58] Creating partial report for 2025-12-02
+[2025-12-02 23:18:58] process_record_updates: generated 474 text placeholders and 0 pic placeholders
+[2025-12-02 23:18:58] Received 474 text updates and 0 record images
+[2025-12-02 23:18:58] Resized sign shift_1_signin: D:\Dixon\Automation_software\Office Software\sync\records\2025-12-02\photos\001_162.jpg
+[2025-12-02 23:18:58] Prepared resized cage photo 001.jpg -> 001_162.jpg
+[2025-12-02 23:18:58] Prepared resized cage photo 001_162.jpg -> 001_162_162.jpg
+[2025-12-02 23:19:17] Applied 476 visible text replacements via python-docx
+[2025-12-02 23:19:18] XML placeholder scan: 402 found, 74 missing (checked 476)
+[2025-12-02 23:19:18] Missing placeholders (sample up to 30): ['(1akz1l)', '(1akz1m)', '(1akz1t)', '(1akz2l)', '(1akz2m)', '(1akz2t)', '(1c496)', '(1c588)', '(1c589)', '(1c590)', '(1c591)', '(1c592)', '(1c593)', '(1c594)', '(1c595)', '(1c596)', '(1c597)', '(1c598)', '(1c599)', '(1c600)', '(1c601)', '(1c602)', '(1c603)', '(1c604)', '(1c605)', '(1c606)', '(1c607)', '(1c608)', '(1c609)', '(1c610)']
+[2025-12-02 23:19:18] XML text replacements prepared: 950 entries (includes non-parenthesized variants)
+[2025-12-02 23:19:18] Image missing for placeholder (shift_1_signout): None
+[2025-12-02 23:19:18] Image missing for placeholder (shift_2_signin): None
+[2025-12-02 23:19:18] Image missing for placeholder (shift_2_signout): None
+[2025-12-02 23:19:19] Saved partial: D:/Dixon/Automation_software/Reports\Daily_Report_2025-12-02_partial.docx
+[2025-12-02 23:19:19] Shift 2 end not found yet — not ready.
+[2025-12-02 23:19:31] No new files – report unchanged.
+[2025-12-02 23:19:42] No new files – report unchanged.
+[2025-12-02 23:19:55] Downloaded: D:\Dixon\Automation_software\Office Software\sync\records\2025-12-02\data\record_002.json
+[2025-12-02 23:19:56] notify(): attempt -> Shift 2 | Shift-2 Signed IN
+[2025-12-02 23:19:56] notify(): plyer.notify succeeded
+[2025-12-02 23:20:00] Downloaded: D:\Dixon\Automation_software\Office Software\sync\records\2025-12-02\photos\002.jpg
+[2025-12-02 23:20:00] Wrote updates mapping to D:/Dixon/Automation_software/Reports\updates_2025-12-02.json (contains 474 entries)
+[2025-12-02 23:20:00] Record updates processed; mapping at: D:/Dixon/Automation_software/Reports\updates_2025-12-02.json
+[2025-12-02 23:20:00] Creating partial report for 2025-12-02
+[2025-12-02 23:20:00] process_record_updates: generated 474 text placeholders and 0 pic placeholders
+[2025-12-02 23:20:00] Received 474 text updates and 0 record images
+[2025-12-02 23:20:00] Resized sign shift_1_signin: D:\Dixon\Automation_software\Office Software\sync\records\2025-12-02\photos\001_162.jpg
+[2025-12-02 23:20:00] Resized sign shift_2_signin: D:\Dixon\Automation_software\Office Software\sync\records\2025-12-02\photos\002_162.jpg
+[2025-12-02 23:20:00] Prepared resized cage photo 001.jpg -> 001_162.jpg
+[2025-12-02 23:20:00] Prepared resized cage photo 001_162.jpg -> 001_162_162.jpg
+[2025-12-02 23:20:00] Prepared resized cage photo 001_162_162.jpg -> 001_162_162_162.jpg
+[2025-12-02 23:20:00] Prepared resized cage photo 002.jpg -> 002_162.jpg
+[2025-12-02 23:20:00] Prepared resized cage photo 002_162.jpg -> 002_162_162.jpg
+[2025-12-02 23:20:19] Applied 476 visible text replacements via python-docx
+[2025-12-02 23:20:20] XML placeholder scan: 402 found, 74 missing (checked 476)
+[2025-12-02 23:20:20] Missing placeholders (sample up to 30): ['(1akz1l)', '(1akz1m)', '(1akz1t)', '(1akz2l)', '(1akz2m)', '(1akz2t)', '(1c496)', '(1c588)', '(1c589)', '(1c590)', '(1c591)', '(1c592)', '(1c593)', '(1c594)', '(1c595)', '(1c596)', '(1c597)', '(1c598)', '(1c599)', '(1c600)', '(1c601)', '(1c602)', '(1c603)', '(1c604)', '(1c605)', '(1c606)', '(1c607)', '(1c608)', '(1c609)', '(1c610)']
+[2025-12-02 23:20:20] XML text replacements prepared: 950 entries (includes non-parenthesized variants)
+[2025-12-02 23:20:21] Image missing for placeholder (shift_1_signout): None
+[2025-12-02 23:20:21] Image missing for placeholder (shift_2_signout): None
+[2025-12-02 23:20:23] Saved partial: D:/Dixon/Automation_software/Reports\Daily_Report_2025-12-02_partial.docx
+[2025-12-02 23:20:23] Shift 2 end not found yet — not ready.
+[2025-12-02 23:20:35] Downloaded: D:\Dixon\Automation_software\Office Software\sync\records\2025-12-02\data\record_003.json
+[2025-12-02 23:20:35] notify(): attempt -> Shift 2 | Shift-2 Signed OUT
+[2025-12-02 23:20:35] notify(): plyer.notify succeeded
+[2025-12-02 23:20:38] Downloaded: D:\Dixon\Automation_software\Office Software\sync\records\2025-12-02\photos\003.jpg
+[2025-12-02 23:20:38] Wrote updates mapping to D:/Dixon/Automation_software/Reports\updates_2025-12-02.json (contains 474 entries)
+[2025-12-02 23:20:38] Record updates processed; mapping at: D:/Dixon/Automation_software/Reports\updates_2025-12-02.json
+[2025-12-02 23:20:38] Creating partial report for 2025-12-02
+[2025-12-02 23:20:38] process_record_updates: generated 474 text placeholders and 0 pic placeholders
+[2025-12-02 23:20:38] Received 474 text updates and 0 record images
+[2025-12-02 23:20:38] Resized sign shift_1_signin: D:\Dixon\Automation_software\Office Software\sync\records\2025-12-02\photos\001_162.jpg
+[2025-12-02 23:20:38] Resized sign shift_2_signin: D:\Dixon\Automation_software\Office Software\sync\records\2025-12-02\photos\002_162.jpg
+[2025-12-02 23:20:38] Resized sign shift_2_signout: D:\Dixon\Automation_software\Office Software\sync\records\2025-12-02\photos\003_162.jpg
+[2025-12-02 23:20:38] Prepared resized cage photo 001.jpg -> 001_162.jpg
+[2025-12-02 23:20:38] Prepared resized cage photo 001_162.jpg -> 001_162_162.jpg
+[2025-12-02 23:20:38] Prepared resized cage photo 001_162_162.jpg -> 001_162_162_162.jpg
+[2025-12-02 23:20:38] Prepared resized cage photo 001_162_162_162.jpg -> 001_162_162_162_162.jpg
+[2025-12-02 23:20:38] Prepared resized cage photo 002.jpg -> 002_162.jpg
+[2025-12-02 23:20:38] Prepared resized cage photo 002_162.jpg -> 002_162_162.jpg
+[2025-12-02 23:20:38] Prepared resized cage photo 002_162_162.jpg -> 002_162_162_162.jpg
+[2025-12-02 23:20:39] Prepared resized cage photo 003.jpg -> 003_162.jpg
+[2025-12-02 23:20:39] Prepared resized cage photo 003_162.jpg -> 003_162_162.jpg
+[2025-12-02 23:21:02] Applied 476 visible text replacements via python-docx
+[2025-12-02 23:21:02] XML placeholder scan: 402 found, 74 missing (checked 476)
+[2025-12-02 23:21:02] Missing placeholders (sample up to 30): ['(1akz1l)', '(1akz1m)', '(1akz1t)', '(1akz2l)', '(1akz2m)', '(1akz2t)', '(1c496)', '(1c588)', '(1c589)', '(1c590)', '(1c591)', '(1c592)', '(1c593)', '(1c594)', '(1c595)', '(1c596)', '(1c597)', '(1c598)', '(1c599)', '(1c600)', '(1c601)', '(1c602)', '(1c603)', '(1c604)', '(1c605)', '(1c606)', '(1c607)', '(1c608)', '(1c609)', '(1c610)']
+[2025-12-02 23:21:02] XML text replacements prepared: 950 entries (includes non-parenthesized variants)
+[2025-12-02 23:21:04] Image missing for placeholder (shift_1_signout): None
+[2025-12-02 23:21:05] Saved partial: D:/Dixon/Automation_software/Reports\Daily_Report_2025-12-02_partial.docx
+[2025-12-02 23:21:06] All checks passed — 2025-12-02 is ready to finalize.
+[2025-12-02 23:21:06] Moved partial to final: D:/Dixon/Automation_software/Reports\final\Daily_Report_2025-12-02_FINAL.docx
+[2025-12-02 23:21:06] Report finalized: D:/Dixon/Automation_software/Reports\final\Daily_Report_2025-12-02_FINAL.docx
+[2025-12-02 23:21:17] No new files – report unchanged.
+[2025-12-02 23:21:29] No new files – report unchanged.
+[2025-12-02 23:21:40] No new files – report unchanged.

@@ -28,6 +28,10 @@ class SyncGUI(tk.Tk):
         # Load settings
         self.settings = self.load_settings()
 
+        import config
+        path = self.settings.get("REPORTS_DIR", "")
+        config.OUTPUT_DIR = path 
+
         # Prepare state variables
         self.sync_running = False
         self.sync_thread = None
@@ -98,7 +102,7 @@ class SyncGUI(tk.Tk):
 
         tk.Button(bottom_frame, text="Open Reports Folder", width=20, command=self.open_reports_folder).grid(row=0, column=0, padx=5)
         tk.Button(bottom_frame, text="Open Last Report", width=20, command=self.open_last_report).grid(row=0, column=1, padx=5)
-        tk.Button(bottom_frame, text="Test Notification", width=18,command=lambda: self.notify("TEST", "If you see this, notifications work")).grid(row=0, column=2, padx=5)
+        #tk.Button(bottom_frame, text="Test Notification", width=18,command=lambda: self.notify("TEST", "If you see this, notifications work")).grid(row=0, column=2, padx=5)
 
         # ------------------------
         # AUTO-START SYNC
@@ -135,6 +139,12 @@ class SyncGUI(tk.Tk):
         from sync_day import sync_day
 
         while self.sync_running:
+            import config
+
+            if not config.OUTPUT_DIR or config.OUTPUT_DIR.strip() == "":
+                log("Sync paused — report folder missing.")
+                time.sleep(2)
+                continue
             if not self.paused:
                 # Fetch available date folders
                 try:
@@ -181,6 +191,10 @@ class SyncGUI(tk.Tk):
         if folder:
             self.settings["REPORTS_DIR"] = folder
             self.save_settings()
+
+            import config
+            config.OUTPUT_DIR = folder  # ← apply immediately
+
             log(f"Reports directory set to: {folder}")
 
     # ============================================================
@@ -248,6 +262,14 @@ class SyncGUI(tk.Tk):
     # START/STOP SYNC
     # ============================================================
     def start_sync(self):
+        import config
+
+        # BLOCK SYNC if user has NOT selected a folder
+        if not config.OUTPUT_DIR or config.OUTPUT_DIR.strip() == "":
+            log("Cannot start sync: No report folder selected!")
+            self.notify("Sync Error", "Please select a Reports Folder first.")
+            return
+        
         if not self.sync_running:
             self.sync_running = True
 

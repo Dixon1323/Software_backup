@@ -1,6 +1,5 @@
 {
-    "OUTPUT_DIR": "D:/Dixon/Automation_software",
+    "REPORTS_DIR": "D:/Dixon/Automation_software/Reports",
     "LOOP_INTERVAL": 10,
-    "ENABLE_NOTIFICATIONS": true,
-    "REPORTS_DIR": "D:/Dixon/Automation_software"
+    "ENABLE_NOTIFICATIONS": true
 }
