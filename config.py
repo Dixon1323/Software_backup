@@ -7,7 +7,7 @@ LOG_FILE = "D:/Dixon/Automation_software/Office Software/sync/sync.log"
 
 LOOP_INTERVAL = 10  # seconds
 
-TEMPLATE_ORIG = r"D:\Dixon\Automation_software\Office Software\template_corrected.docx"
+TEMPLATE_ORIG = r"D:\Dixon\Automation_software\Office Software\template.docx"
 OUTPUT_DIR = "D:/Dixon/Automation_software/Office Software/sync/reports/"
 
 # image / docx media settings
