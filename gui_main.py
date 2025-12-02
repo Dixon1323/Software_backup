@@ -7,7 +7,8 @@ import time
 from datetime import datetime
 import subprocess
 
-
+from PIL import Image, ImageDraw
+import pystray
 from logger import log
 from config import SETTINGS_FILE
 from plyer import notification
@@ -21,7 +22,7 @@ class SyncGUI(tk.Tk):
         super().__init__()
 
 
-        self.title("Daily Sync System")
+        self.title("Word Report Sync System")
         self.geometry("650x430")
         self.resizable(False, False)
 
@@ -31,6 +32,10 @@ class SyncGUI(tk.Tk):
         import config
         path = self.settings.get("REPORTS_DIR", "")
         config.OUTPUT_DIR = path 
+
+        self.protocol("WM_DELETE_WINDOW", self.minimize_to_tray)
+        self.tray_icon = None
+        self.tray_thread = None
 
         # Prepare state variables
         self.sync_running = False
@@ -42,7 +47,7 @@ class SyncGUI(tk.Tk):
         # ------------------------
         # TITLE
         # ------------------------
-        tk.Label(self, text="Daily Sync System", font=("Arial", 18, "bold")).pack(pady=10)
+        tk.Label(self, text="Word Report Sync System", font=("Arial", 18, "bold")).pack(pady=10)
 
         # ------------------------
         # CONTROL BUTTONS
@@ -111,6 +116,51 @@ class SyncGUI(tk.Tk):
 
         # Background UI updater
         self.after(1000, self.update_ui_loop)
+
+
+    def create_tray_icon(self):
+        # Create simple tray icon dynamically
+        image = Image.new('RGB', (64, 64), "white")
+        draw = ImageDraw.Draw(image)
+        draw.rectangle((0, 0, 64, 64), fill="blue")
+
+        menu = pystray.Menu(
+            pystray.MenuItem("Show", self.show_window),
+            pystray.MenuItem("Exit", self.exit_app)
+        )
+
+        self.tray_icon = pystray.Icon("Daily Sync System", image, "Daily Sync System", menu)
+
+
+    def minimize_to_tray(self):
+        self.withdraw()  # Hide window
+
+        if self.tray_icon is None:
+            self.create_tray_icon()
+
+            def run_tray():
+                self.tray_icon.run()
+
+            self.tray_thread = threading.Thread(target=run_tray, daemon=True)
+            self.tray_thread.start()
+
+
+    def show_window(self, icon=None, item=None):
+        self.deiconify()     # Show window
+        if self.tray_icon:
+            self.tray_icon.stop()
+            self.tray_icon = None
+    
+
+
+
+    def exit_app(self, icon=None, item=None):
+        if self.tray_icon:
+            self.tray_icon.stop()
+        self.destroy()
+        os._exit(0)   # Force kill threads
+
+
 
     # ============================================================
     # LOAD SETTINGS
@@ -217,7 +267,7 @@ class SyncGUI(tk.Tk):
                 notification.notify(
                     title=title,
                     message=msg,
-                    app_name="Daily Sync System",
+                    app_name="Word Report Sync System",
                     timeout=5
                 )
                 log("notify(): plyer.notify succeeded")
@@ -429,7 +479,7 @@ class SyncGUI(tk.Tk):
                     self.shift1_status.config(text=f"Shift-1: {display_state}", fg=color)
                     self.last_shift1 = new_state
                     if self.enable_notifications.get():
-                        self.notify("Shift 1", f"Shift-1 {display_state}")
+                        self.notify("Shift Update", f"Shift-1 {display_state}")
                 elif self.last_shift1 is None:
                     # If first state is OUT, set silently
                     self.shift1_status.config(text=f"Shift-1: {display_state}", fg=color)
@@ -439,7 +489,7 @@ class SyncGUI(tk.Tk):
                     self.shift1_status.config(text=f"Shift-1: {display_state}", fg=color)
                     self.last_shift1 = new_state
                     if self.enable_notifications.get():
-                        self.notify("Shift 1", f"Shift-1 {display_state}")
+                        self.notify("Shift Update", f"Shift-1 {display_state}")
             # SHIFT 2
             else:
                 if self.last_shift2 is None and new_state == "IN":
@@ -447,7 +497,7 @@ class SyncGUI(tk.Tk):
                     self.shift2_status.config(text=f"Shift-2: {display_state}", fg=color)
                     self.last_shift2 = new_state
                     if self.enable_notifications.get():
-                        self.notify("Shift 2", f"Shift-2 {display_state}")
+                        self.notify("Shift Update", f"Shift-2 {display_state}")
                 elif self.last_shift2 is None:
                     # If first state is OUT, set silently
                     self.shift2_status.config(text=f"Shift-2: {display_state}", fg=color)
@@ -457,30 +507,65 @@ class SyncGUI(tk.Tk):
                     self.shift2_status.config(text=f"Shift-2: {display_state}", fg=color)
                     self.last_shift2 = new_state
                     if self.enable_notifications.get():
-                        self.notify("Shift 2", f"Shift-2 {display_state}")
+                        self.notify("Shift Update", f"Shift-2 {display_state}")
 
 
     # ============================================================
     # FILE OPENING
     # ============================================================
     def open_reports_folder(self):
-        folder = self.settings["REPORTS_DIR"]
-        if folder and os.path.exists(folder):
-            os.startfile(folder)
+        import config
 
-    def open_last_report(self):
-        folder = self.settings["REPORTS_DIR"]
-        if not folder or not os.path.exists(folder):
+        root_folder = config.OUTPUT_DIR
+        if not root_folder or not os.path.isdir(root_folder):
+            log("Open Reports Folder failed: OUTPUT_DIR invalid.")
             return
 
-        files = sorted(
-            [f for f in os.listdir(folder) if f.endswith(".docx")],
-            key=lambda x: os.path.getmtime(os.path.join(folder, x)),
-            reverse=True
+        final_folder = os.path.join(root_folder, "final")
+
+        if not os.path.isdir(final_folder):
+            log("Open Reports Folder: 'final' folder not found.")
+            return
+
+        os.startfile(final_folder)
+        log(f"Opened reports folder: {final_folder}")
+
+    def open_last_report(self):
+        import config
+
+        root_folder = config.OUTPUT_DIR
+        if not root_folder or not os.path.isdir(root_folder):
+            log("Open Last Report failed: OUTPUT_DIR invalid.")
+            return
+
+        final_folder = os.path.join(root_folder, "final")
+
+        if not os.path.isdir(final_folder):
+            log("Open Last Report failed: 'final' folder missing.")
+            return
+
+        try:
+            files = [
+                f for f in os.listdir(final_folder)
+                if f.lower().endswith(".docx")
+            ]
+        except:
+            log("Could not list files in final/")
+            return
+
+        if not files:
+            log("No reports found inside final/")
+            return
+
+        # Most recent file
+        last_file = max(
+            files,
+            key=lambda f: os.path.getmtime(os.path.join(final_folder, f))
         )
 
-        if files:
-            os.startfile(os.path.join(folder, files[0]))
+        path = os.path.join(final_folder, last_file)
+        os.startfile(path)
+        log(f"Opened last report: {path}")
 
 
 # ============================================================
