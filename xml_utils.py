@@ -22,32 +22,26 @@ NSMAP = {
 
 
 def replace_placeholder_across_wt_nodes(xml_bytes, placeholder, drawing_snippet):
-    """
-    Try to replace placeholder that may be split across multiple <w:t> nodes.
-    xml_bytes: bytes content of the XML part
-    placeholder: e.g. "(1c588)" (string)
-    drawing_snippet: XML string representing a <w:r> element (as in your build_drawing_xml output)
-    Returns: (new_xml_bytes, replaced_count) where replaced_count is 0 or 1
-    """
+
     try:
         parser = etree.XMLParser(ns_clean=True, recover=True, remove_blank_text=False)
         root = etree.fromstring(xml_bytes, parser=parser)
     except Exception:
         return xml_bytes, 0
 
-    # find all text nodes in document order
+    
     text_nodes = root.findall('.//' + W_NS + 't')
     if not text_nodes:
         return xml_bytes, 0
 
-    # Build list of texts and cumulative lengths
+    
     texts = [ (t, (t.text or "")) for t in text_nodes ]
     concat = "".join([t for (_, t) in texts])
     idx = concat.find(placeholder)
     if idx == -1:
         return xml_bytes, 0
 
-    # determine which nodes cover that range
+    
     start = 0
     s_node = None
     e_node = None
@@ -68,55 +62,55 @@ def replace_placeholder_across_wt_nodes(xml_bytes, placeholder, drawing_snippet)
     if s_node is None or e_node is None:
         return xml_bytes, 0
 
-    # find the <w:r> parent for the start node
+    
     start_run = s_node.getparent()
     while start_run is not None and start_run.tag != W_NS + 'r':
         start_run = start_run.getparent()
     if start_run is None:
         return xml_bytes, 0
 
-    # Remove/clear text content across involved nodes and remove runs between start and end
-    # We'll replace the start_run with the drawing snippet element
-    # Parse drawing_snippet into element(s)
+    
+    
+    
     try:
         drawing_el = etree.fromstring(drawing_snippet.encode('utf-8'))
     except Exception:
-        # drawing_snippet might not be a full-root fragment; wrap it
+        
         drawing_el = etree.fromstring(f"<root>{drawing_snippet}</root>".encode('utf-8'))
 
-        # if wrapped, get the first child as the <w:r> element
+        
         children = list(drawing_el)
         if children:
             drawing_el = children[0]
         else:
             return xml_bytes, 0
 
-    # find all run parents between s_idx and e_idx inclusive and remove them (we'll insert drawing at start position)
+    
     run_nodes = []
     for i in range(s_idx, e_idx + 1):
         tn = text_nodes[i]
         r = tn.getparent()
-        # sometimes w:t inside other wrappers, ensure r is <w:r>
+        
         while r is not None and r.tag != W_NS + 'r':
             r = r.getparent()
         if r is not None:
             run_nodes.append(r)
 
     parent_of_runs = run_nodes[0].getparent() if run_nodes else start_run.getparent()
-    # insert drawing element at index of first run
+    
     insert_index = list(parent_of_runs).index(run_nodes[0]) if run_nodes else list(parent_of_runs).index(start_run)
-    # At times drawing_el may have namespaces; import it into this tree
+    
     parent_of_runs.insert(insert_index, drawing_el)
 
-    # remove original runs
+    
     for r in run_nodes:
         try:
             parent_of_runs.remove(r)
         except Exception:
-            # best-effort
+            
             pass
 
-    # write back
+    
     new_bytes = etree.tostring(root, xml_declaration=True, encoding='utf-8')
     return new_bytes, 1
 
@@ -297,14 +291,14 @@ def inject_images_into_docx(input_docx, output_docx, placeholder_image_map, text
 
                 drawing_snippet = build_drawing_xml(rId, cx, cy)
 
-                # try fast replace first
+                
                 if placeholder in txt:
                     new_txt = txt.replace(placeholder, drawing_snippet)
                     if new_txt != txt:
                         txt = new_txt
                         modified = True
                     else:
-                        # placeholder may be split across <w:t> nodes — attempt robust node-level replace
+                        
                         try:
                             new_bytes, replaced = replace_placeholder_across_wt_nodes(txt.encode('utf-8'), placeholder, drawing_snippet)
                             if replaced:

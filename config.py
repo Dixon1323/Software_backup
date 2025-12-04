@@ -5,10 +5,10 @@ APPDATA_DIR = os.path.join(os.getenv("APPDATA"), APP_NAME)
 
 os.makedirs(APPDATA_DIR, exist_ok=True)
 
-# Server Base URL
+
 BASE_URL = "https://birdportal.pythonanywhere.com/records/"
 
-# Runtime storage
+
 SYNC_DIR = os.path.join(APPDATA_DIR, "sync")
 LOCAL_DIR = os.path.join(SYNC_DIR, "records")
 os.makedirs(LOCAL_DIR, exist_ok=True)

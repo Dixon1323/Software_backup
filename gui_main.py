@@ -12,12 +12,18 @@ from config import SETTINGS_FILE
 from plyer import notification
 from PIL import Image
 import pystray
-from ui_layout import ModernUI   # ⬅ Modern UI imported here
+from ui_layout import ModernUI
 
 
 class SyncGUI(tk.Tk):
     def __init__(self):
         super().__init__()
+
+        icon_path = os.path.join(os.path.dirname(__file__), "icon.ico")
+        try:
+            self.iconbitmap(icon_path)
+        except:
+            pass
 
         # ------------------------------------
         # LOAD SETTINGS
@@ -256,7 +262,7 @@ class SyncGUI(tk.Tk):
                 # Try WinNotify first
                 from winotify import Notification, audio
                 toast = Notification(
-                    app_id="Daily Sync System",
+                    app_id="DPC Word Automation",
                     title=title,
                     msg=msg,
                     duration="short"
@@ -274,7 +280,7 @@ class SyncGUI(tk.Tk):
                 notification.notify(
                     title=title,
                     message=msg,
-                    app_name="Daily Sync System",
+                    app_name="DPC Word Automation",
                     timeout=5
                 )
                 log(f"Notification: Plyer SUCCESS")
@@ -432,7 +438,7 @@ class SyncGUI(tk.Tk):
                         text=f"Signed {'IN' if new_state=='IN' else 'OUT'}",
                         text_color="green" if new_state == "IN" else "red"
                     )
-                    self.notify(f"Shift {shift}", f"Shift-{shift} Signed {'IN' if new_state=='IN' else 'OUT'}")
+                    self.notify(f"Shift Update", f"Shift-{shift} Signed {'IN' if new_state=='IN' else 'OUT'}")
                     # log(f"DEBUG: First notification -> Shift-{shift} {new_state}")
                     continue
 
@@ -468,12 +474,14 @@ class SyncGUI(tk.Tk):
         if self.is_hidden_to_tray:
             return
 
+        self.overrideredirect(False)
         self.withdraw()  # Hide window
         self.is_hidden_to_tray = True
 
         # Create tray icon image
         try:
-            image = Image.open("tray_icon.png")
+            icon_path = os.path.join(os.path.dirname(__file__), "app_icon.ico")
+            image = Image.open(icon_path)
         except:
             # fallback: create a small blank icon
             image = Image.new('RGB', (64, 64), color='black')
@@ -505,7 +513,8 @@ class SyncGUI(tk.Tk):
     def restore_from_tray(self):
         if self.tray_icon:
             self.tray_icon.stop()
-
+        
+        self.overrideredirect(True)
         self.is_hidden_to_tray = False
         self.tray_icon = None
 
@@ -523,9 +532,7 @@ class SyncGUI(tk.Tk):
         os._exit(0)
 
 
-# ============================================================
-# RUN APP
-# ============================================================
+
 if __name__ == "__main__":
     app = SyncGUI()
     app.mainloop()

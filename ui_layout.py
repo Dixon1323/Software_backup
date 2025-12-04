@@ -32,6 +32,10 @@ class ModernUI:
 
         # Window basics
         self.root.title("DPC Word Automation ")
+        # Remove default window title bar
+        self.root.overrideredirect(True)
+        self._add_custom_title_bar()
+
         self.root.geometry("900x520")
         self.root.minsize(820, 480)
         self.root.configure(bg="#020617")  # dark backdrop
@@ -297,8 +301,8 @@ class ModernUI:
             font=("Segoe UI", 12),
             text_color="#d1d5db",
             progress_color="#22c55e",
-            button_color="#020617",
-            button_hover_color="#020617"
+            button_color="#4E66CE",
+            button_hover_color="#D10A0A"
         )
         self.notifications_switch.grid(row=6, column=0, columnspan=2,
                                        sticky="w", padx=18, pady=(10, 4))
@@ -422,3 +426,50 @@ class ModernUI:
 
         # schedule the next animation frame
         self.root.after(100, self._animate_status_pill)
+
+
+    def _add_custom_title_bar(self):
+        titlebar = ctk.CTkFrame(self.root, height=38, fg_color="#0f172a")
+        titlebar.pack(fill="x", side="top")
+
+        # App Name on Title bar
+        title_label = ctk.CTkLabel(
+            titlebar,
+            text="🕊 DPC Word Automation",
+            font=("Segoe UI Semibold", 14),
+            text_color="#e2e8f0"
+        )
+        title_label.pack(side="left", padx=12)
+
+        # ----- Window Control Buttons -----
+        def minimize():
+            self.root.overrideredirect(False)
+            self.root.iconify()
+
+        def close():
+            self.root.event_generate("<<CloseApp>>")  # handled in gui_main
+
+        btn_style = {
+            "width": 40, "height": 26,
+            "fg_color": "#1e293b",
+            "hover_color": "#334155",
+            "corner_radius": 6
+        }
+
+
+        min_btn = ctk.CTkButton(titlebar, text="—", command=minimize, **btn_style)
+        min_btn.pack(side="right", padx=3, pady=5)
+
+        # ----- Enable window dragging -----
+        def start_move(event):
+            self._drag_x = event.x
+            self._drag_y = event.y
+
+        def on_move(event):
+            x = event.x_root - self._drag_x
+            y = event.y_root - self._drag_y
+            self.root.geometry(f"+{x}+{y}")
+
+        titlebar.bind("<Button-1>", start_move)
+        titlebar.bind("<B1-Motion>", on_move)
+

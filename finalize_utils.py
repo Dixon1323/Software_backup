@@ -6,10 +6,7 @@ from db_utils import save_download_db, load_download_db
 from config import OUTPUT_DIR
 
 def check_report_ready(date_str, local_loader):
-    """
-    This wrapper expects `local_loader` to be a function that returns records for a date.
-    The old check_report_ready logic used local JSONs; calling code should pass load_day_records_local.
-    """
+
     records = local_loader(date_str)
     if not records:
         log(f"No records found locally for {date_str} — cannot finalize.")
