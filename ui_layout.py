@@ -230,8 +230,8 @@ class ModernUI:
             mode="determinate",
             height=16,
             corner_radius=999,
-            fg_color="#020617",
-            progress_color="#00ff2a"  # indigo
+            fg_color="#B3BAD6",
+            progress_color="#2206a0"  # indigo
         )
         self.progress.set(0)
         self.progress.grid(row=2, column=0, columnspan=2, sticky="ew",
@@ -258,7 +258,7 @@ class ModernUI:
         # Loop interval row
         loop_label = ctk.CTkLabel(
             center_panel,
-            text="⏱️  Loop interval (sec):",
+            text="⏱️  Refresh interval (sec):",
             font=("Segoe UI", 12),
             text_color="#d1d5db"
         )
@@ -421,4 +421,4 @@ class ModernUI:
             self.status_pill.configure(text_color="#f97373")
 
         # schedule the next animation frame
-        self.root.after(450, self._animate_status_pill)
+        self.root.after(100, self._animate_status_pill)

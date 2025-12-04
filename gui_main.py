@@ -54,6 +54,12 @@ class SyncGUI(tk.Tk):
         # ------------------------------------
         self.ui = ModernUI(self)
 
+        import config
+        if config.OUTPUT_DIR == config.DEFAULT_OUTPUT_DIR:
+            self.update_status_pill("Needs Setup")
+            self.notify("Setup Required", "Reporting temporarily using a default storage location.")
+
+
         # Attach events to UI buttons
         self.ui.start_stop_btn.configure(command=self.toggle_start_stop)
         # self.ui.pause_resume_btn.configure(command=self.toggle_pause_resume)
@@ -95,12 +101,12 @@ class SyncGUI(tk.Tk):
         if getattr(self, "is_running_anim", False):
             current = self.ui.status_pill.cget("text_color")
             # Pulse between two greens
-            pulse_green = "#22c55e"
-            pulse_light = "#4ade80"
+            pulse_green = "#ffffff"
+            pulse_light = "#000000"
             self.ui.status_pill.configure(
                 text_color=pulse_light if current == pulse_green else pulse_green
             )
-            self.after(600, self.animate_pill)
+            self.after(1000, self.animate_pill)
 
     def update_status_pill(self, state):
             if state == "Running":
@@ -111,6 +117,11 @@ class SyncGUI(tk.Tk):
             elif state == "Paused":
                 self.ui.status_pill.configure(text="● Paused",text_color="#f4c542")  # yellow)
                 self.ui.status_pill_bg.configure(fg_color="#5a4b13")
+                self.is_running_anim = False
+            
+            elif state == "Needs Setup":
+                self.ui.status_pill.configure(text="● Setup Required", text_color="#fbbf24")
+                self.ui.status_pill_bg.configure(fg_color="#78350f")
                 self.is_running_anim = False
 
             else:  # Stopped
@@ -131,6 +142,16 @@ class SyncGUI(tk.Tk):
     # START / STOP SYNC
     # ============================================================
     def start_sync(self):
+        import config
+
+        # Check if OUTPUT_DIR still default → warn and stop
+        if config.OUTPUT_DIR == config.DEFAULT_OUTPUT_DIR:
+            self.update_status_pill("Needs Setup")
+            self.notify("Setup Required", "Please select a Reports Folder before syncing.")
+            tk.messagebox.showwarning("Reports Folder Not Set",
+                "Reports folder is currently using a default internal location.\n\n"
+                "Please select a proper destination under: 'Select Reports Folder'")
+            return
         if not self.sync_running:
             self.sync_running = True
             self.ui.start_stop_btn.configure(text="Stop Sync")
@@ -219,6 +240,8 @@ class SyncGUI(tk.Tk):
 
             log(f"Reports directory set to: {folder}")
 
+            self.update_status_pill("Running")
+            self.start_sync()
 
     # ============================================================
     # NOTIFICATIONS
