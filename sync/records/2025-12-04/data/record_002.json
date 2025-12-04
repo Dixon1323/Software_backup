@@ -1,6 +1,6 @@
 {
-    "type": "end_shift",
-    "shift": "1",
-    "timestamp": "2025-12-04 01:20:23",
+    "type": "start_shift",
+    "shift": "2",
+    "timestamp": "2025-12-04 03:07:07",
     "photo": "002.jpg"
 }

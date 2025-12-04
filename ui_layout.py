@@ -20,7 +20,7 @@ class ModernUI:
         - shift2_status
         - status_pill
         - status_pill_bg
-        - theme_switch   (new)
+        - theme_switch
     """
 
     def __init__(self, root: ctk.CTk | ctk.CTkBaseClass):
@@ -28,40 +28,44 @@ class ModernUI:
 
         # --- Global CTk look ---
         ctk.set_appearance_mode("dark")
-        ctk.set_default_color_theme("blue")  # you can try "green", "dark-blue", etc.
+        ctk.set_default_color_theme("blue")
 
-        self.root.title("Daily Sync System")
+        # Window basics
+        self.root.title("DPC Word Automation ")
         self.root.geometry("900x520")
         self.root.minsize(820, 480)
-        self.root.configure(bg="#020617")  # very dark background
+        self.root.configure(bg="#020617")  # dark backdrop
 
         # =========================
-        # OUTER "GLASS" CONTAINER
+        # OUTER BACKDROP
         # =========================
         outer = ctk.CTkFrame(
             self.root,
             fg_color="#020617",
             corner_radius=0
         )
-        outer.pack(fill="both", expand=True, padx=12, pady=12)
+        outer.pack(fill="both", expand=True, padx=16, pady=16)
 
+        # Main glass container
         glass = ctk.CTkFrame(
             outer,
             corner_radius=26,
-            fg_color="#020617"  # almost black, simulating glass panel
+            fg_color="#030712",      # slightly lighter than background
+            border_width=1,
+            border_color="#1f2937"   # subtle border
         )
-        glass.pack(fill="both", expand=True, padx=2, pady=2)
+        glass.pack(fill="both", expand=True)
 
         # =========================
         # TOP BAR
         # =========================
         top_bar = ctk.CTkFrame(glass, fg_color="transparent")
-        top_bar.pack(fill="x", padx=18, pady=(14, 4))
+        top_bar.pack(fill="x", padx=22, pady=(14, 4))
 
-        # App title with icon
+        # App title
         self.title_label = ctk.CTkLabel(
             top_bar,
-            text="🕊️  Daily Sync System",
+            text="🕊️  DPC Word Automation",
             font=("Segoe UI Semibold", 22),
             text_color="#e5e7eb"
         )
@@ -77,18 +81,20 @@ class ModernUI:
         )
         self.date_label.pack(side="left", padx=(14, 0))
 
-        # Status pill background (rounded)
+        # Status pill background (rounded "glass" pill)
         self.status_pill_bg = ctk.CTkFrame(
             top_bar,
-            width=120,
+            width=130,
             height=30,
-            fg_color="#1e293b",
-            corner_radius=999
+            fg_color="#111827",
+            corner_radius=999,
+            border_width=1,
+            border_color="#4f46e5"  # purple accent border
         )
         self.status_pill_bg.pack(side="right", padx=4)
         self.status_pill_bg.pack_propagate(False)
 
-        # Actual pill text
+        # Pill label
         self.status_pill = ctk.CTkLabel(
             self.status_pill_bg,
             text="● Stopped",
@@ -97,7 +103,7 @@ class ModernUI:
         )
         self.status_pill.place(relx=0.5, rely=0.5, anchor="center")
 
-        # internal pulse vars
+        # internal pulse state
         self._pulse_phase = 0
         self._start_status_pulse_loop()
 
@@ -105,16 +111,24 @@ class ModernUI:
         # MAIN 3-COLUMN AREA
         # =========================
         main = ctk.CTkFrame(glass, fg_color="transparent")
-        main.pack(fill="both", expand=True, padx=18, pady=(4, 14))
+        main.pack(fill="both", expand=True, padx=22, pady=(4, 18))
 
         main.grid_rowconfigure(0, weight=1)
         main.grid_columnconfigure(0, weight=1)
         main.grid_columnconfigure(1, weight=2)
         main.grid_columnconfigure(2, weight=1)
 
-        # ---------- LEFT: shift cards ----------
-        left_panel = ctk.CTkFrame(main, corner_radius=20, fg_color="#020817")
-        left_panel.grid(row=0, column=0, sticky="nsew", padx=(0, 10), pady=4)
+        # -------------------------
+        # LEFT PANEL – SHIFTS
+        # -------------------------
+        left_panel = ctk.CTkFrame(
+            main,
+            corner_radius=22,
+            fg_color="#020617",
+            border_width=1,
+            border_color="#1f2937"
+        )
+        left_panel.grid(row=0, column=0, sticky="nsew", padx=(0, 12), pady=4)
 
         left_title = ctk.CTkLabel(
             left_panel,
@@ -125,8 +139,14 @@ class ModernUI:
         left_title.pack(anchor="w", padx=16, pady=(14, 4))
 
         # Shift 1 card
-        shift1_card = ctk.CTkFrame(left_panel, corner_radius=18, fg_color="#0b1120")
-        shift1_card.pack(fill="x", padx=12, pady=(6, 4))
+        shift1_card = ctk.CTkFrame(
+            left_panel,
+            corner_radius=18,
+            fg_color="#050816",
+            border_width=1,
+            border_color="#111827"
+        )
+        shift1_card.pack(fill="x", padx=14, pady=(6, 4))
 
         shift1_header = ctk.CTkLabel(
             shift1_card,
@@ -145,8 +165,14 @@ class ModernUI:
         self.shift1_status.pack(anchor="w", padx=12, pady=(0, 10))
 
         # Shift 2 card
-        shift2_card = ctk.CTkFrame(left_panel, corner_radius=18, fg_color="#0b1120")
-        shift2_card.pack(fill="x", padx=12, pady=(8, 12))
+        shift2_card = ctk.CTkFrame(
+            left_panel,
+            corner_radius=18,
+            fg_color="#050816",
+            border_width=1,
+            border_color="#111827"
+        )
+        shift2_card.pack(fill="x", padx=14, pady=(8, 14))
 
         shift2_header = ctk.CTkLabel(
             shift2_card,
@@ -164,11 +190,19 @@ class ModernUI:
         )
         self.shift2_status.pack(anchor="w", padx=12, pady=(0, 10))
 
-        # ---------- CENTER: progress + controls ----------
-        center_panel = ctk.CTkFrame(main, corner_radius=20, fg_color="#020817")
-        center_panel.grid(row=0, column=1, sticky="nsew", padx=10, pady=4)
+        # -------------------------
+        # CENTER PANEL – PROGRESS
+        # -------------------------
+        center_panel = ctk.CTkFrame(
+            main,
+            corner_radius=22,
+            fg_color="#020617",
+            border_width=1,
+            border_color="#1f2937"
+        )
+        center_panel.grid(row=0, column=1, sticky="nsew", padx=12, pady=4)
 
-        center_panel.grid_rowconfigure(3, weight=1)  # allow some stretch
+        center_panel.grid_rowconfigure(3, weight=1)
 
         center_title = ctk.CTkLabel(
             center_panel,
@@ -176,42 +210,50 @@ class ModernUI:
             font=("Segoe UI Semibold", 16),
             text_color="#e5e7eb"
         )
-        center_title.grid(row=0, column=0, columnspan=2, sticky="w", padx=18, pady=(14, 10))
+        center_title.grid(row=0, column=0, columnspan=2, sticky="w",
+                          padx=18, pady=(14, 10))
 
-        # Progress label & bar
+        # Progress label
         self.progress_label = ctk.CTkLabel(
             center_panel,
             text="Progress: 0 / 178 Locations",
             font=("Segoe UI", 12),
-            text_color="#9ca3af"
+            text_color="#ffffff"
         )
-        self.progress_label.grid(row=1, column=0, columnspan=2, sticky="w", padx=18, pady=(0, 4))
+        self.progress_label.grid(row=1, column=0, columnspan=2, sticky="w",
+                                 padx=18, pady=(0, 4))
 
+        # Progress bar – purple/blue accent
         self.progress = ctk.CTkProgressBar(
             center_panel,
             orientation="horizontal",
             mode="determinate",
-            height=14,
+            height=16,
             corner_radius=999,
             fg_color="#020617",
-            progress_color="#22c55e"
+            progress_color="#00ff2a"  # indigo
         )
         self.progress.set(0)
-        self.progress.grid(row=2, column=0, columnspan=2, sticky="ew", padx=18, pady=(0, 12))
+        self.progress.grid(row=2, column=0, columnspan=2, sticky="ew",
+                           padx=18, pady=(0, 14))
 
-        # Start/Stop
+        # Start/Stop button – pill & gradient-like color
         self.start_stop_btn = ctk.CTkButton(
             center_panel,
             text="▶️  Start Sync",
             font=("Segoe UI Semibold", 13),
             corner_radius=999,
-            height=34
+            height=36,
+            fg_color="#4f46e5",    # purple
+            hover_color="#6366f1"  # lighter indigo
         )
-        self.start_stop_btn.grid(row=3, column=0, sticky="w", padx=(18, 8), pady=(4, 4))
+        self.start_stop_btn.grid(row=3, column=0, sticky="w",
+                                 padx=(18, 8), pady=(4, 6))
 
-        # Divider line
+        # Divider
         divider = ctk.CTkFrame(center_panel, height=1, fg_color="#111827")
-        divider.grid(row=4, column=0, columnspan=2, sticky="ew", padx=18, pady=(12, 8))
+        divider.grid(row=4, column=0, columnspan=2, sticky="ew",
+                     padx=18, pady=(12, 8))
 
         # Loop interval row
         loop_label = ctk.CTkLabel(
@@ -220,10 +262,12 @@ class ModernUI:
             font=("Segoe UI", 12),
             text_color="#d1d5db"
         )
-        loop_label.grid(row=5, column=0, sticky="w", padx=(18, 4), pady=(6, 4))
+        loop_label.grid(row=5, column=0, sticky="w",
+                        padx=(18, 4), pady=(6, 4))
 
         interval_frame = ctk.CTkFrame(center_panel, fg_color="transparent")
-        interval_frame.grid(row=5, column=1, sticky="e", padx=(4, 18), pady=(6, 4))
+        interval_frame.grid(row=5, column=1, sticky="e",
+                            padx=(4, 18), pady=(6, 4))
 
         self.interval_entry = ctk.CTkEntry(
             interval_frame,
@@ -246,7 +290,7 @@ class ModernUI:
         )
         self.save_interval_btn.pack(side="left")
 
-        # Notifications toggle
+        # Desktop notifications toggle
         self.notifications_switch = ctk.CTkSwitch(
             center_panel,
             text="Desktop notifications",
@@ -256,25 +300,35 @@ class ModernUI:
             button_color="#020617",
             button_hover_color="#020617"
         )
-        self.notifications_switch.grid(row=6, column=0, columnspan=2, sticky="w", padx=18, pady=(10, 4))
+        self.notifications_switch.grid(row=6, column=0, columnspan=2,
+                                       sticky="w", padx=18, pady=(10, 4))
 
-        # Theme toggle
-        self.theme_switch = ctk.CTkSwitch(
-            center_panel,
-            text="Dark mode",
-            font=("Segoe UI", 12),
-            text_color="#d1d5db",
-            progress_color="#22c55e",
-            button_color="#020617",
-            button_hover_color="#020617",
-            command=self._on_theme_toggle
+        # # Theme toggle
+        # self.theme_switch = ctk.CTkSwitch(
+        #     center_panel,
+        #     text="Dark mode",
+        #     font=("Segoe UI", 12),
+        #     text_color="#d1d5db",
+        #     progress_color="#22c55e",
+        #     button_color="#020617",
+        #     button_hover_color="#020617",
+        #     command=self._on_theme_toggle
+        # )
+        # self.theme_switch.grid(row=7, column=0, columnspan=2,
+        #                        sticky="w", padx=18, pady=(4, 12))
+        # self.theme_switch.select()  # default dark
+
+        # -------------------------
+        # RIGHT PANEL – REPORTS
+        # -------------------------
+        right_panel = ctk.CTkFrame(
+            main,
+            corner_radius=22,
+            fg_color="#020617",
+            border_width=1,
+            border_color="#1f2937"
         )
-        self.theme_switch.grid(row=7, column=0, columnspan=2, sticky="w", padx=18, pady=(4, 12))
-        self.theme_switch.select()  # default = dark mode
-
-        # ---------- RIGHT: report controls ----------
-        right_panel = ctk.CTkFrame(main, corner_radius=20, fg_color="#020817")
-        right_panel.grid(row=0, column=2, sticky="nsew", padx=(10, 0), pady=4)
+        right_panel.grid(row=0, column=2, sticky="nsew", padx=(12, 0), pady=4)
 
         right_title = ctk.CTkLabel(
             right_panel,
@@ -289,7 +343,9 @@ class ModernUI:
             text="📂  Select Reports Folder",
             font=("Segoe UI", 12),
             corner_radius=999,
-            height=34
+            height=34,
+            fg_color="#1f2937",
+            hover_color="#111827"
         )
         self.report_btn.pack(fill="x", padx=16, pady=(4, 6))
 
@@ -299,8 +355,8 @@ class ModernUI:
             font=("Segoe UI", 12),
             corner_radius=999,
             height=34,
-            fg_color="#1e293b",
-            hover_color="#111827",
+            fg_color="#1f2937",
+            hover_color="#111827"
         )
         self.open_reports_btn.pack(fill="x", padx=16, pady=6)
 
@@ -310,12 +366,11 @@ class ModernUI:
             font=("Segoe UI", 12),
             corner_radius=999,
             height=34,
-            fg_color="#1e293b",
-            hover_color="#111827",
+            fg_color="#1f2937",
+            hover_color="#111827"
         )
         self.open_last_btn.pack(fill="x", padx=16, pady=(6, 14))
 
-        # Tiny hint at the bottom
         hint_label = ctk.CTkLabel(
             right_panel,
             text="ℹ️  Reports are saved inside a 'final' sub-folder.",
@@ -345,29 +400,25 @@ class ModernUI:
 
     def _animate_status_pill(self):
         """
-        Simple pulse effect when status text contains 'Running'.
-        Colors:
-          - Running  → green pulse
-          - Paused   → yellow static
-          - Stopped  → red static
+        Pulse when 'Running' — purple/blue glow.
         """
         text = (self.status_pill.cget("text") or "").lower()
 
         if "running" in text:
-            # pulsing green
-            colors = ["#166534", "#16a34a", "#22c55e", "#16a34a"]
+            # purple/blue pulse sequence
+            colors = ["#312e81", "#4338ca", "#4f46e5", "#6366f1"]
             idx = self._pulse_phase % len(colors)
             self.status_pill_bg.configure(fg_color=colors[idx])
             self.status_pill.configure(text_color="#f9fafb")
             self._pulse_phase += 1
         elif "paused" in text:
-            # yellow
+            # amber static
             self.status_pill_bg.configure(fg_color="#854d0e")
             self.status_pill.configure(text_color="#fde68a")
         else:
-            # stopped or anything else → red
-            self.status_pill_bg.configure(fg_color="#1e293b")
+            # stopped / idle
+            self.status_pill_bg.configure(fg_color="#111827")
             self.status_pill.configure(text_color="#f97373")
 
-        # schedule next frame
+        # schedule the next animation frame
         self.root.after(450, self._animate_status_pill)

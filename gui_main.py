@@ -26,7 +26,11 @@ class SyncGUI(tk.Tk):
 
         # Apply saved report folder to config
         import config
-        config.OUTPUT_DIR = self.settings.get("REPORTS_DIR", "")
+        saved_dir = self.settings.get("REPORTS_DIR", "")
+        if saved_dir and os.path.exists(saved_dir):
+            config.OUTPUT_DIR = saved_dir
+        else:
+            log("DEBUG: No saved REPORTS_DIR — using default AppData reports folder")
 
         self.tray_icon = None
         self.is_hidden_to_tray = False
@@ -98,39 +102,21 @@ class SyncGUI(tk.Tk):
             )
             self.after(600, self.animate_pill)
 
-
-    def update_status_pill(self, state):
-        if state == "Running":
-            self.ui.status_pill.configure(text="● Running")
-            self.ui.status_pill_bg.configure(fg_color="#0f5132")  # deep green
-            self.is_running_anim = True
-            self.animate_pill()
-
-        elif state == "Paused":
-            self.ui.status_pill.configure(text="● Paused", text_color="#f4c542")
-            self.ui.status_pill_bg.configure(fg_color="#5a4b13")
-            self.is_running_anim = False
-
-        else:  # Stopped
-            self.ui.status_pill.configure(text="● Stopped", text_color="#f97373")
-            self.ui.status_pill_bg.configure(fg_color="#5b1d1d")
-            self.is_running_anim = False
     def update_status_pill(self, state):
             if state == "Running":
-                self.ui.status_pill.configure(
-                    text="● Running",
-                    text_color="#3adb76"  # green
-                )
+                self.ui.status_pill.configure(text="● Running",text_color="#3adb76")  # green)
+                self.ui.status_pill_bg.configure(fg_color="#0f5132")  # deep green
+                self.is_running_anim = True
+                self.animate_pill()
             elif state == "Paused":
-                self.ui.status_pill.configure(
-                    text="● Paused",
-                    text_color="#f4c542"  # yellow
-                )
+                self.ui.status_pill.configure(text="● Paused",text_color="#f4c542")  # yellow)
+                self.ui.status_pill_bg.configure(fg_color="#5a4b13")
+                self.is_running_anim = False
+
             else:  # Stopped
-                self.ui.status_pill.configure(
-                    text="● Stopped",
-                    text_color="#f97373"  # red
-                )
+                self.ui.status_pill.configure(text="● Stopped",text_color="#f97373")  # red
+                self.ui.status_pill_bg.configure(fg_color="#5b1d1d")
+                self.is_running_anim = False
 
     # ============================================================
     # SETTINGS SAVE
@@ -237,22 +223,59 @@ class SyncGUI(tk.Tk):
     # ============================================================
     # NOTIFICATIONS
     # ============================================================
+
     def notify(self, title, msg):
         if not bool(self.ui.notifications_switch.get()):
             return
 
         def worker():
             try:
+                # Try WinNotify first
+                from winotify import Notification, audio
+                toast = Notification(
+                    app_id="Daily Sync System",
+                    title=title,
+                    msg=msg,
+                    duration="short"
+                )
+                toast.set_audio(audio.Default, loop=False)
+                toast.show()
+                log(f"Notification: WinNotify SUCCESS")
+                return
+            except Exception as e:
+                log(f"WinNotify failed: {e}")
+
+            # Fallback to plyer
+            try:
+                from plyer import notification
                 notification.notify(
                     title=title,
                     message=msg,
                     app_name="Daily Sync System",
                     timeout=5
                 )
+                log(f"Notification: Plyer SUCCESS")
             except Exception as e:
                 log(f"Notification error: {e}")
 
         threading.Thread(target=worker, daemon=True).start()
+
+    # def notify(self, title, msg):
+    #     if not bool(self.ui.notifications_switch.get()):
+    #         return
+
+    #     def worker():
+    #         try:
+    #             notification.notify(
+    #                 title=title,
+    #                 message=msg,
+    #                 app_name="Daily Sync System",
+    #                 timeout=5
+    #             )
+    #         except Exception as e:
+    #             log(f"Notification error: {e}")
+
+    #     threading.Thread(target=worker, daemon=True).start()
 
 
     # ============================================================
@@ -293,78 +316,104 @@ class SyncGUI(tk.Tk):
     # SHIFT DETECTION (same logic as before)
     # ============================================================
     def detect_shift_updates(self):
-        from config import DOWNLOADED_DB
+            from config import DOWNLOADED_DB, LOCAL_DIR
 
-        if not os.path.exists(DOWNLOADED_DB):
-            return
+            # log("DEBUG: detect_shift_updates() called")
 
-        try:
-            with open(DOWNLOADED_DB, "r") as f:
-                db = json.load(f)
-        except:
-            return
-
-        today = datetime.now().strftime("%Y-%m-%d")
-        if today not in db:
-            return
-
-        shift_events = {"1": [], "2": []}
-
-        for name in db[today]["data"]:
-            if not name.endswith(".json"):
-                continue
-
-            path = os.path.join("sync", "records", today, "data", name)
-            if not os.path.exists(path):
-                continue
+            if not os.path.exists(DOWNLOADED_DB):
+                # log("DEBUG: DOWNLOADED_DB does not exist → No shifts yet")
+                return
 
             try:
-                with open(path, "r") as f:
-                    rec = json.load(f)
-            except:
-                continue
+                with open(DOWNLOADED_DB, "r") as f:
+                    db = json.load(f)
+            except Exception as e:
+                # log(f"DEBUG: Failed to load download DB → {e}")
+                return
 
-            rtype = rec.get("type")
-            shift = str(rec.get("shift", ""))
-            if rtype not in ("start_shift", "end_shift") or shift not in ("1", "2"):
-                continue
+            today = datetime.now().strftime("%Y-%m-%d")
+            # log(f"DEBUG: Today = {today}")
 
-            ts_str = rec.get("timestamp")
-            try:
-                event_time = datetime.strptime(ts_str, "%Y-%m-%d %H:%M:%S")
-            except:
-                event_time = datetime.now()
+            if today not in db:
+                # log("DEBUG: No records found for today in DB")
+                return
 
-            shift_events[shift].append(
-                {"type": rtype, "time": event_time}
-            )
+            shift_events = {"1": [], "2": []}
+            day_folder = os.path.join(LOCAL_DIR, today, "data")
+            # log(f"DEBUG: Local day folder → {day_folder}")
 
-        for shift in ("1", "2"):
-            if not shift_events[shift]:
-                continue
+            if not os.path.exists(day_folder):
+                # log("DEBUG: Local day folder does not exist → No shifts downloaded yet")
+                return
 
-            latest = sorted(shift_events[shift], key=lambda e: e["time"])[-1]
-            new_state = "IN" if latest["type"] == "start_shift" else "OUT"
+            data_files = db[today].get("data", [])
+            # log(f"DEBUG: Files listed in DB → {len(data_files)}")
 
-            label = self.ui.shift1_status if shift == "1" else self.ui.shift2_status
-            last_state_attr = "last_shift1" if shift == "1" else "last_shift2"
+            for name in data_files:
+                if not name.endswith(".json"):
+                    continue
 
-            last = getattr(self, last_state_attr)
-            if last is None:
-                setattr(self, last_state_attr, new_state)
-                label.configure(
-                    text=f"Signed {'IN' if new_state=='IN' else 'OUT'}",
-                    text_color="green" if new_state == "IN" else "red"
-                )
-                continue
+                path = os.path.join(day_folder, name)
+                # log(f"DEBUG: Checking file → {path}")
 
-            if last != new_state:
-                setattr(self, last_state_attr, new_state)
-                label.configure(
-                    text=f"Signed {'IN' if new_state=='IN' else 'OUT'}",
-                    text_color="green" if new_state == "IN" else "red"
-                )
-                self.notify(f"Shift {shift}", f"Shift-{shift} Signed {'IN' if new_state=='IN' else 'OUT'}")
+                if not os.path.exists(path):
+                    # log("DEBUG: FILE NOT FOUND LOCALLY — CRITICAL PATH ISSUE")
+                    continue
+
+                try:
+                    with open(path, "r") as f:
+                        rec = json.load(f)
+                except Exception as e:
+                    # log(f"DEBUG: Failed to load JSON {name} → {e}")
+                    continue
+
+                rtype = rec.get("type")
+                shift = str(rec.get("shift", ""))
+                ts_str = rec.get("timestamp")
+
+                # log(f"DEBUG: JSON {name} -> type={rtype}, shift={shift}, ts={ts_str}")
+
+                if rtype not in ("start_shift", "end_shift"):
+                    continue
+                if shift not in ("1", "2"):
+                    continue
+
+                try:
+                    event_time = datetime.strptime(ts_str, "%Y-%m-%d %H:%M:%S")
+                except:
+                    event_time = datetime.now()
+
+                shift_events[shift].append({"type": rtype, "time": event_time})
+
+            # SHOW FOUND SHIFT EVENTS
+            # log(f"DEBUG: Shift event counts → Shift1={len(shift_events['1'])}, Shift2={len(shift_events['2'])}")
+
+            for shift in ("1", "2"):
+                if not shift_events[shift]:
+                    # log(f"DEBUG: No events for shift {shift}")
+                    continue
+
+                latest = sorted(shift_events[shift], key=lambda e: e["time"])[-1]
+                new_state = "IN" if latest["type"] == "start_shift" else "OUT"
+
+                # log(f"DEBUG: Shift-{shift} latest state → {new_state}")
+
+                label = self.ui.shift1_status if shift == "1" else self.ui.shift2_status
+                last_state_attr = "last_shift1" if shift == "1" else "last_shift2"
+                last = getattr(self, last_state_attr)
+
+                if last is None:
+                    # First shift event — update UI and notify
+                    setattr(self, last_state_attr, new_state)
+                    label.configure(
+                        text=f"Signed {'IN' if new_state=='IN' else 'OUT'}",
+                        text_color="green" if new_state == "IN" else "red"
+                    )
+                    self.notify(f"Shift {shift}", f"Shift-{shift} Signed {'IN' if new_state=='IN' else 'OUT'}")
+                    # log(f"DEBUG: First notification -> Shift-{shift} {new_state}")
+                    continue
+
+
 
 
     # ============================================================

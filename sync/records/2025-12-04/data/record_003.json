@@ -1,10 +1,6 @@
 {
-    "type": "record_update",
+    "type": "end_shift",
     "shift": "1",
-    "cage_number": "527",
-    "location": "Eastern Promenade",
-    "myna_captured": "4",
-    "local_released": "2",
-    "timestamp": "2025-12-04 02:23:16",
+    "timestamp": "2025-12-04 03:13:51",
     "photo": "003.jpg"
 }

@@ -1,15 +1,27 @@
 import os
 
+APP_NAME = "DailySync"
+APPDATA_DIR = os.path.join(os.getenv("APPDATA"), APP_NAME)
 
-ROOT = os.path.dirname(os.path.abspath(__file__))
+os.makedirs(APPDATA_DIR, exist_ok=True)
+
+# Server Base URL
 BASE_URL = "https://birdportal.pythonanywhere.com/records/"
-SYNC_DIR = os.path.join(ROOT, "sync")
+
+# Runtime storage
+SYNC_DIR = os.path.join(APPDATA_DIR, "sync")
 LOCAL_DIR = os.path.join(SYNC_DIR, "records")
-OUTPUT_DIR = None
+os.makedirs(LOCAL_DIR, exist_ok=True)
+
 DOWNLOADED_DB = os.path.join(SYNC_DIR, "downloaded_files.json")
-LOG_FILE = os.path.join(SYNC_DIR, "sync.log")
-SETTINGS_FILE = os.path.join(ROOT, "settings.json")
-TEMPLATE_ORIG = os.path.join(ROOT, "template.docx")
-LOOP_INTERVAL = 10  
+LOG_FILE = os.path.join(APPDATA_DIR, "sync.log")
+SETTINGS_FILE = os.path.join(APPDATA_DIR, "settings.json")
+
+OUTPUT_DIR = os.path.join(LOCAL_DIR, "reports")
+os.makedirs(OUTPUT_DIR, exist_ok=True)
+
+TEMPLATE_ORIG = os.path.join(os.path.dirname(__file__), "template.docx")
+
+LOOP_INTERVAL = 10
 MEDIA_EXT = ".png"
 EMU_PER_PIXEL = 9525
